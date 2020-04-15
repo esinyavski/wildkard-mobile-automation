@@ -1,0 +1,20 @@
+{
+  "platformName": "iOS",
+  "platformVersion": "13.4",
+  "deviceName": "iPhone SE",
+  "udid": "7aca20613c557b79ba16e543a2f39d2608501e58",
+  "xcodeOrgId": "DAF8CQM5P7",
+  "xcodeSigningId": "iPhone Developer",
+  "bundleId": "io.leverx.scorebox",
+  "appiumUrl": "http://localhost:4723/wd/hub",
+  "app_path": "/Users/leverx/Downloads/scorebox.ipa",
+  "main_phone": {
+    "number": "295066205",
+    "country": "belarus"
+  },
+  "secondary_phone": {
+    "number": "3106681658",
+    "country": "usa"
+  },
+  "waiting_time": 60
+}
