@@ -8,8 +8,9 @@ CONFIG_PATH = os.path.join(os.path.dirname(__file__), "../../config.json")
 
 @dataclass
 class ConfigPhone:
-    number: str
     country: str
+    number: str
+    full_number: str = None
 
 
 @dataclass
@@ -22,9 +23,7 @@ class Config:
     xcodeSigningId: str
     bundleId: str
     appiumUrl: str
-    app_path: str
     main_phone: ConfigPhone
-    secondary_phone: ConfigPhone
     waiting_time: int
 
 
@@ -40,10 +39,8 @@ def parse_config() -> Config:
             xcodeSigningId=config['xcodeSigningId'],
             bundleId=config['bundleId'],
             appiumUrl=config['appiumUrl'],
-            app_path=config['app_path'],
             main_phone=ConfigPhone(number=config['main_phone']['number'],
+                                   full_number=config['main_phone']['full_number'],
                                    country=config['main_phone']['country']),
-            secondary_phone=ConfigPhone(number=config['secondary_phone']['number'],
-                                        country=config['secondary_phone']['country']),
             waiting_time=config['waiting_time']
         )

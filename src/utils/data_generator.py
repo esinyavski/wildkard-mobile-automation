@@ -17,11 +17,10 @@ class StringType(Enum):
 class DataGenerator:
 
     FILTER_KEY = "auto_test"
-    LEAGUE_NAME = "Super League"
+    LEAGUE_NAME = "League Auto_test"
     TEAM_NAME_1 = "Team auto_test 1"
     TEAM_NAME_2 = "Team auto_test 2"
     TEAM_NAME_3 = "Team auto_test 3"
-    MAIN_USER = "José Mourinho"
 
     @classmethod
     def gen_string(cls,
