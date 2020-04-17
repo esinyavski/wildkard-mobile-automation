@@ -7,14 +7,10 @@
   "xcodeSigningId": "iPhone Developer",
   "bundleId": "io.leverx.scorebox",
   "appiumUrl": "http://localhost:4723/wd/hub",
-  "app_path": "/Users/leverx/Downloads/scorebox.ipa",
   "main_phone": {
     "number": "295066205",
+    "full_number": "+375295066205",
     "country": "belarus"
   },
-  "secondary_phone": {
-    "number": "3106681658",
-    "country": "usa"
-  },
-  "waiting_time": 60
+  "waiting_time": 10
 }
