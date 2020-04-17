@@ -8,7 +8,7 @@ from src.wrappers.driver import Driver
 from src.utils.config_parser import parse_config
 from src.utils.data_generator import DataGenerator
 from src.app.features.login import Login
-from src.app.features.organizing import Organizing
+from src.app.features.landing import Landing
 
 
 @pytest.fixture(scope='session', autouse=True)
@@ -34,5 +34,11 @@ def login():
 
 
 @pytest.fixture
-def organizing():
-    return Organizing()
+def landing():
+    return Landing()
+
+
+@pytest.fixture
+def organizing(landing, dummy):
+    landing.click__league_menu()
+    return landing.select_league_from_menu(name=dummy.LEAGUE_NAME)
