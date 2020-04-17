@@ -1,5 +1,8 @@
 import time
+import pytest
+
 from src.app.features.common import Common
+from src.app.constants import Role
 
 
 class Organizing(Common):
@@ -28,8 +31,27 @@ class Organizing(Common):
     def go_to_amplify(self):
         self.find_element_by_xpath('//XCUIElementTypeButton[@name="ORGANIZER_AMPLIFY, tab, 4 of 5"]').click()
 
+    def click__profile(self):
+        self.find_element_by_xpath('//XCUIElementTypeOther[@name=""]').click()
+
+    def click__settings(self):
+        self.find_element_by_xpath('//XCUIElementTypeStaticText[@name=""]').click()
+
+    def add_official_to_league(self, user):
+        # type the user
+        self.send_keys(el=self.find_element_by_accessibility_id('Phone number, name, or add from contacts'),
+                       data=user.number)
+        self.find_element_by_xpath(f'//XCUIElementTypeOther[@name="{user.full_number}"]').click()
+        # select the role
+        self.find_element_by_accessibility_id('ios_touchable_wrapper').click()
+        self.send_keys(el=self.find_element_by_xpath('//XCUIElementTypePicker[@name="ios_picker"]'),
+                       data=Role.Official.value)
+        # send invitation
+        self.find_element_by_accessibility_id('Send invitation').click()
+        self.find_element_by_accessibility_id('Officials invited!').is_displayed()
+
     def click__create_team(self):
-        self.find_element_by_xpath('//XCUIElementTypeOther[@name=" Create team"]').click()
+        self.find_element_by_xpath('(//XCUIElementTypeOther[@name="leaguesSheetLeagueButton"])[2]').click()
 
     def upload_logo_from_gallery(self):
         self.find_element_by_accessibility_id('難 Upload logo').click()
@@ -50,24 +72,27 @@ class Organizing(Common):
     def click__ok(self):
         self.find_element_by_accessibility_id('OK').click()
 
-    def create_team(self, name, athlete_name=None, upload_logo=False):
+    def create_team(self, name, user=None, upload_logo=False):
         self.click__create_team()
         self.enter_team_name(name)
+        self.find_element_by_xpath('//*[@name="or"]').click()
+        if "Team name taken. Please type in a new team name." in self.driver.page_source:
+            pytest.skip("Team name taken. Please clean app's DB before test run")
         if upload_logo:
             self.upload_logo_from_gallery()
         else:
             self.determine_logo_by_wildkard()
-        if athlete_name:
+        if user:
             self.find_element_by_xpath('(//XCUIElementTypeOther[@name=" Add athletes (optional) "])[2]').click()
             self.send_keys(el=self.find_element_by_accessibility_id('Phone number, name, or add from contacts'),
-                           data=athlete_name)
-            self.find_element_by_xpath(f'//XCUIElementTypeOther[@name="{athlete_name}"]').click()
+                           data=user.number)
+            self.find_element_by_xpath(f'//XCUIElementTypeOther[@name="{user.full_number}"]').click()
         self.click__create()
         self.find_element_by_accessibility_id('Team created').is_displayed()
         self.click__ok()
 
     def click__invite_athletes(self):
-        self.find_element_by_xpath('//XCUIElementTypeOther[@name=" Invite athletes"]').click()
+        self.find_element_by_xpath('(//XCUIElementTypeOther[@name="leaguesSheetLeagueButton"])[1]').click()
 
     def click__select_users(self):
         self.find_element_by_accessibility_id('').click()
@@ -76,7 +101,7 @@ class Organizing(Common):
         self.send_keys(el=self.find_element_by_xpath('//*[@name=" Search "]'),
                        data=value)
 
-    def edit_team(self, name, athlete_name):
+    def edit_team(self, name, user):
         # search
         self.send_keys(el=self.find_element_by_xpath('//*[@name="Search"]'),
                        data=self.dummy.FILTER_KEY)
@@ -89,33 +114,17 @@ class Organizing(Common):
         # add athlete
         self.find_element_by_xpath('(//XCUIElementTypeOther[@name=" Add athletes "])[3]').click()
         self.send_keys(el=self.find_element_by_accessibility_id('Phone number, name, or add from contacts'),
-                       data=athlete_name)
-        self.find_element_by_xpath(f'//XCUIElementTypeOther[@name="{athlete_name}"]').click()
+                       data=user.number)
+        self.find_element_by_xpath(f'//XCUIElementTypeOther[@name="{user.full_number}"]').click()
         self.find_element_by_accessibility_id('Send invitation').click()
         self.find_element_by_accessibility_id('Athletes invited!').is_displayed()
         self.click__ok()
 
         # check result
-        new_name = self.find_element_by_xpath('//XCUIElementTypeTextField').text
-        assert 'upd' in new_name
-        self.find_elements_by_xpath(
-            f'//XCUIElementTypeOther[starts-with(@name, "{athlete_name}")]')[-1].is_displayed()
-        return new_name
-
-    def check_notification(self, message):
-        start_time = time.time()
-
-        while (time.time() - start_time) < self.config.waiting_time:
-            res = self.driver.page_source
-            if message in res:
-                return
-            # time.sleep(0.1)
-        else:
-            raise AssertionError(
-                f"Notification is not received after waiting {self.config.waiting_time} sec.")
+        assert 'upd' in self.find_element_by_xpath('//XCUIElementTypeTextField').text
 
     def click__create_game(self):
-        self.find_element_by_xpath('//XCUIElementTypeOther[@name=" Create game"]').click()
+        self.find_element_by_xpath('(//XCUIElementTypeOther[@name="leaguesSheetLeagueButton"])[3]').click()
 
     def add_game_title(self):
         self.send_keys(el=self.find_element_by_xpath('//XCUIElementTypeOther[@name="Add game title"]'),
@@ -143,11 +152,11 @@ class Organizing(Common):
                 data=self.dummy.FILTER_KEY)
             self.find_element_by_accessibility_id(team_names[1]).click()
 
-    def add_officials(self, athlete_name):
+    def add_officials_to_game(self, user):
         self.find_element_by_xpath('(//XCUIElementTypeOther[@name=" Officials (optional) "])[2]').click()
         self.send_keys(el=self.find_element_by_accessibility_id('Phone number, name, or add from contacts'),
-                       data=athlete_name)
-        self.find_element_by_accessibility_id(athlete_name).click()
+                       data=user.number)
+        self.find_element_by_accessibility_id(user.full_number).click()
 
     def click__schedule(self):
         self.find_element_by_accessibility_id('Schedule').click()
@@ -170,11 +179,18 @@ class Organizing(Common):
         self.find_element_by_accessibility_id(team_name).click()
 
     def select_game(self):
-        self.find_elements_by_xpath(
-            '//XCUIElementTypeOther[contains(@name, "TA1") and contains(@name, "TA2")]')[-1].click()
+        els = self.find_elements_by_xpath(
+            '//XCUIElementTypeOther[contains(@name, "TA1") and contains(@name, "TA2")]')
+        if not els:
+            pytest.skip("There are no games created with names TA1 and TA2. Please run tests for creating games.")
+        els[-1].click()
 
     def select_practice(self):
-        self.find_elements_by_xpath('//XCUIElementTypeOther[contains(@name, "PRACTICE")]')[-1].click()
+        els = self.find_elements_by_xpath(
+            '//XCUIElementTypeOther[contains(@name, "PRACTICE")]')
+        if not els:
+            pytest.skip("There are no practice created. Please run tests for creating practices.")
+        els[-1].click()
 
     def click__edit(self):
         self.find_element_by_xpath('//XCUIElementTypeOther[@name="Edit"]').click()

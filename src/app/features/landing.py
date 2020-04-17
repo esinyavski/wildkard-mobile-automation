@@ -1,4 +1,8 @@
+import time
+import pytest
+
 from src.app.features.common import Common
+from src.app.features.organizing import Organizing
 
 
 class Landing(Common):
@@ -7,11 +11,96 @@ class Landing(Common):
         super().__init__(page=__class__.__name__, **kwargs)
 
     def validate(self):
-        self.find_element_by_xpath('//XCUIElementTypeStaticText[@name="CHANNELS"]').is_displayed()
+        if self.find_elements_by_xpath('//XCUIElementTypeStaticText[@name="CHANNELS"]'):
+            return
+        elif self.check_welcome_page():
+            pytest.skip("You are on the Welcome page. Please clean app's DB before test run.")
+        else:
+            raise AssertionError("landing page is not displayed")
+
+    def go_to_dashboard(self):
+        self.find_element_by_xpath('//XCUIElementTypeButton[@name="DASHBOARD, tab, 1 of 5"]').click()
+
+    def go_to_search(self):
+        self.find_element_by_xpath('//XCUIElementTypeButton[@name="SEARCH, tab, 2 of 5"]').click()
+
+    def go_to_important(self):
+        self.find_element_by_xpath('//XCUIElementTypeButton[@name="IMPORTANT, tab, 3 of 5"]').click()
+
+    def go_to_dialog(self):
+        self.find_element_by_xpath('//XCUIElementTypeButton[@name="DIALOG, tab, 4 of 5"]').click()
+
+    def go_to_notification(self):
+        self.find_element_by_xpath('//XCUIElementTypeButton[@name="NOTIFICATION, tab, 5 of 5"]').click()
 
     def click__yes_this_is_correct(self):
-        self.tap(self.find_element_by_accessibility_id('Yes, this is correct'))
+        self.find_element_by_accessibility_id('Yes, this is correct').click()
 
     def click__log_out(self):
-        self.tap(self.find_element_by_accessibility_id('Log out'))
+        self.find_element_by_accessibility_id('Log out').click()
+
+    def click__user_menu(self):
+        self.find_element_by_accessibility_id('userHeaderIconTouch').click()
+
+    def click__league_menu(self):
+        time.sleep(4)
+        self.action.tap(x=278, y=57).perform()
+
+    def click__create_new_league(self):
+        self.find_element_by_accessibility_id('Create new League').click()
+
+    def select_sport__soccer(self):
+        self.find_element_by_accessibility_id('Soccer').click()
+
+    def select_sport__basketball(self):
+        self.find_element_by_accessibility_id('Basketball').click()
+
+    def type_league_name(self, name):
+        self.send_keys(el=self.find_element_by_accessibility_id('League Name'),
+                       data=name)
+
+    def click__create_league(self) -> Organizing:
+        self.find_elements_by_xpath('//XCUIElementTypeOther[@name="Create League"]')[-1].click()
+        return Organizing()
+
+    def select_league_from_menu(self, name) -> Organizing:
+        self.find_elements_by_xpath(f'//XCUIElementTypeOther[@name="{name} ORGANIZER"]')[0].click()
+        return Organizing()
+
+    def select_league_from_page(self, name):
+        els = self.find_elements_by_xpath(f'//XCUIElementTypeOther[@name="{name}"]')
+        if not els:
+            raise AssertionError(f"There is no league `{name}` on the landing page")
+        else:
+            els[0].click()
+
+    def accept_invitation(self):
+        self.find_elements_by_xpath('//XCUIElementTypeOther[@name="Yes"]')[-1].click()
+
+    def check_team_displayed(self, name):
+        self.find_element_by_xpath(f'//XCUIElementTypeOther[@name="{name}"]').is_displayed()
+
+    def select_team_from_page(self, name):
+        els = self.find_elements_by_xpath(f'//XCUIElementTypeOther[@name="{name}"]')
+        if not els:
+            raise AssertionError(f"There is no team `{name}` on the landing page")
+        else:
+            els[0].click()
+
+    def send_message_to_chat(self):
+        # write
+        msg = self.dummy.gen_string()
+        self.send_keys(el=self.find_element_by_xpath('//*[@name="Write a message"]/XCUIElementTypeTextField'),
+                       data=msg)
+        # send
+        self.find_element_by_xpath('(//XCUIElementTypeOther[@name="GIF"])[2]/XCUIElementTypeOther[2]').click()
+        # check
+        self.find_element_by_xpath(f'//XCUIElementTypeStaticText[@name="{msg}"]').is_displayed()
+
+    def send_gif_to_chat(self):
+        # click on the gif option
+        self.find_element_by_xpath('(//XCUIElementTypeOther[@name="GIF"])[2]').click()
+        # select the first suggested gif
+        self.find_element_by_xpath(
+            '//XCUIElementTypeScrollView/XCUIElementTypeOther[1]/XCUIElementTypeOther[1]/XCUIElementTypeOther/XCUIElementTypeOther[1]/XCUIElementTypeOther').click()
 
