@@ -7,7 +7,7 @@ verify_ssl = true
 
 [packages]
 pytest = "*"
-allure-pytest = "*"
+pytest-depends = "*"
 selenium = "*"
 Appium-Python-Client = "*"
 fauxfactory = "*"
