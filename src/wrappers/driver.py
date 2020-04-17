@@ -6,10 +6,8 @@ from appium import webdriver
 from appium.webdriver.webelement import WebElement
 from appium.webdriver.webdriver import WebDriver
 from appium.webdriver.common.touch_action import TouchAction
-from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as ec
 
 from src.utils.logger import Logger
 from src.utils.config_parser import Config
@@ -60,6 +58,12 @@ class Driver:
     def tap(self, el: WebElement):
         self.action.tap(el).perform()
 
+    def press(self, el: WebElement):
+        self.action.press(el).perform()
+
+    def long_press(self, el: WebElement):
+        self.action.long_press(el).perform()
+
     @staticmethod
     def clear(el: WebElement):
         el.click()
@@ -69,7 +73,3 @@ class Driver:
     def send_keys(el: WebElement, data: str):
         el.click()
         el.send_keys(data)
-
-    def wait_until_visible(self, locator):
-        by = By.XPATH if "/" in locator else By.ID
-        return self.wait.until(ec.visibility_of_element_located((by, locator)))
