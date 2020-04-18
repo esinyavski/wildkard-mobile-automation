@@ -7,13 +7,20 @@
 
 ## Limitation
 - Due to complicated setup of working multiple users and intercepting notifications from several 3rd party apps, tests are configured to be run for only one user with the real phone number
-
+- In the current UI of the app, the option for selecting a league and navigating to `organizing`,
+can not be reached by a locator (Xpath or accessibility id) and temporarily, until it is fixed on the Frontend side,
+it is implemented with typing by coordinates, that is not a good practice and it depends on device's screen resolution.
+Please change the coordinates of this element by inspecting it via Appium inspector:
+![](https://i.ibb.co/G3y47g8/Appium-2020-04-18-16-42-40.png)
+It should be done after execution of `Environment Setup` topic located below.
+Put coordinates into the file `src->features->landing.py-> func click__league_menu`. 
+ 
 ## Next steps
 - Add script for automatic cleanup the system before each test run (now tests for signing up, teams creating will be skipped if its test data already taken in the system)
-- Add support to work with multiple users, intersepting notifications from several apps (iOS Messages and textPlus)
+- Add support to work with multiple users, intercepting notifications from several apps (iOS Messages and textPlus)
 - Add logging of all test steps
 - Add HTML report to illustrate tests result and statistics (now it is viewed from console)
-- Extend tests coverage (now the coverage is about 40 % of Core scenarious)
+- Extend tests coverage (now the coverage is about 40 % of Core scenarios)
 - Add API level with actions, which is required for performing preconditions
 
 ## Requirements
@@ -29,7 +36,7 @@
 - Install the Carthage dependency manager: `brew install carthage`
 
 ### Install Appium Desktop
-- Download tand install he latest [appium-desktop](https://github.com/appium/appium-desktop)
+- Download and install he latest [appium-desktop](https://github.com/appium/appium-desktop)
 
 ### Install Appium Console
 - Install via NPM `npm install -g appium`
@@ -119,6 +126,6 @@ Open the config file `config.json` in your favourite editor and replace the fiel
 
 ### Run tests
 
-`pipenv run "pytest"`
+`pipenv run pytest vvs`
 
 See results in the console.
