@@ -13,10 +13,10 @@ class Login(Common):
         super().__init__(page=__class__.__name__, **kwargs)
 
     def validate(self):
-        if self.find_elements_by_accessibility_id('Welcome to'):
+        if self.check_welcome_page():
             return
         elif self.check_landing_page():
-            pytest.skip("You are on the Landing page. Please clean app's DB before test run")
+            self.logout()
         else:
             raise AssertionError("Welcome page is not displayed")
 
@@ -70,10 +70,31 @@ class Login(Common):
 
     def click__sign_up_on_profile(self):
         self.find_element_by_xpath('(//XCUIElementTypeOther[@name="Sign Up"])[4]').click()
+        return Landing()
 
     def click__login_on_profile(self):
         self.find_element_by_xpath('(//XCUIElementTypeOther[@name="Log In"])[4]').click()
-
-    @staticmethod
-    def go_to_landing():
         return Landing()
+
+    def login(self):
+        self.click__log_in()
+        self.authenticate(
+            phone_number=self.config.main_phone.number,
+            country=self.config.main_phone.country)
+        self.fill_profile()
+        self.click__login_on_profile()
+
+    def click__yes_this_is_correct(self):
+        self.find_element_by_accessibility_id('Yes, this is correct').click()
+
+    def click__log_out(self):
+        self.find_element_by_accessibility_id('Log out').click()
+
+    def click__user_menu(self):
+        self.find_element_by_accessibility_id('userHeaderIconTouch').click()
+
+    def logout(self):
+        self.click__user_menu()
+        self.click__log_out()
+        return Login()
+

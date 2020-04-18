@@ -11,10 +11,10 @@ class Landing(Common):
         super().__init__(page=__class__.__name__, **kwargs)
 
     def validate(self):
-        if self.find_elements_by_xpath('//XCUIElementTypeStaticText[@name="CHANNELS"]'):
+        if self.check_landing_page():
             return
         elif self.check_welcome_page():
-            pytest.skip("You are on the Welcome page. Please clean app's DB before test run.")
+            pytest.skip("You are on the Welcome page. Run login test before.")
         else:
             raise AssertionError("landing page is not displayed")
 
@@ -33,21 +33,13 @@ class Landing(Common):
     def go_to_notification(self):
         self.find_element_by_xpath('//XCUIElementTypeButton[@name="NOTIFICATION, tab, 5 of 5"]').click()
 
-    def click__yes_this_is_correct(self):
-        self.find_element_by_accessibility_id('Yes, this is correct').click()
-
-    def click__log_out(self):
-        self.find_element_by_accessibility_id('Log out').click()
-
-    def click__user_menu(self):
-        self.find_element_by_accessibility_id('userHeaderIconTouch').click()
-
     def click__league_menu(self):
+        # temporary implementation due to unreachable UI element
         time.sleep(4)
         self.action.tap(x=278, y=57).perform()
 
     def click__create_new_league(self):
-        self.find_element_by_accessibility_id('Create new League').click()
+        self.find_elements_by_xpath('//XCUIElementTypeOther[@name="Create new League"]')[-1].click()
 
     def select_sport__soccer(self):
         self.find_element_by_accessibility_id('Soccer').click()

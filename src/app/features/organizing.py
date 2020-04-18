@@ -242,7 +242,8 @@ class Organizing(Common):
         self.find_element_by_accessibility_id('Yes, delete').click()
 
     def update_attendance(self):
-        self.find_element_by_xpath('//XCUIElementTypeOther[@name="Attendance "]').click()
+        self.find_element_by_accessibility_id('Attendance ').click()
+        self.find_element_by_accessibility_id('1 TA1 0 RSVPs ').click()
         self.find_element_by_accessibility_id('Here').click()
         self.find_element_by_accessibility_id('1 TA2 0 RSVPs ').click()
         self.find_element_by_accessibility_id('Absent').click()
