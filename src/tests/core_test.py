@@ -103,7 +103,6 @@ def test_edit_team__rename__add_user(base_config, driver, organizing, dummy):
 
 
 @pytest.mark.skip("The test should be corrected due to changed app logic")
-@pytest.mark.depends(on=['test_edit_team__rename__add_user'])
 def test_accept_invitation_after_editing_team(driver, landing, dummy):
     landing.go_to_notification()
     landing.accept_invitation()
@@ -130,6 +129,18 @@ def test_schedule_game__both_teams__location__official(base_config, driver, orga
     organizing.click__schedule()
     organizing.check_notification(
         message=f"Wildkard Update: Your upcoming game ({dummy.TEAM_NAME_1} vs {dummy.TEAM_NAME_2}) is scheduled")
+
+
+def test_update_game_attendance(driver, organizing):
+    organizing.go_to_games()
+    organizing.select_game()
+    organizing.update_attendance()
+
+
+def test_update_game_scores(driver, organizing):
+    organizing.go_to_games()
+    organizing.select_game()
+    organizing.update_scores()
 
 
 def test_draft_game__one_team__no_location__no_official(driver, organizing, dummy):
@@ -198,15 +209,3 @@ def test_delete_practice(driver, organizing):
     organizing.click__delete_practice()
     organizing.click__yes_delete()
     organizing.validate()
-
-
-def test_update_game_attendance(driver, organizing):
-    organizing.go_to_games()
-    organizing.select_game()
-    organizing.update_attendance()
-
-
-def test_update_game_scores(driver, organizing):
-    organizing.go_to_games()
-    organizing.select_game()
-    organizing.update_scores()
