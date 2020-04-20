@@ -34,9 +34,8 @@ class Login(Common):
 
         while (time.time() - start_time) < self.config.waiting_time:
             res = self.driver.page_source
-            if 'confirmation code is' in res:
+            if 'confirmation code' in res:
                 return re.search(r'\d{5}', res).group()
-            time.sleep(0.1)
         else:
             raise AssertionError(f"OTP is not received after waiting {self.config.waiting_time} sec.")
 

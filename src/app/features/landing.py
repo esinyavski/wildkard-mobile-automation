@@ -53,6 +53,9 @@ class Landing(Common):
 
     def click__create_league(self) -> Organizing:
         self.find_elements_by_xpath('//XCUIElementTypeOther[@name="Create League"]')[-1].click()
+        time.sleep(1)
+        if "Organization already exist" in self.driver.page_source:
+            pytest.skip("Organization already exists. Please clean app's DB before test run")
         return Organizing()
 
     def select_league_from_menu(self, name) -> Organizing:
@@ -60,7 +63,7 @@ class Landing(Common):
         return Organizing()
 
     def select_league_from_page(self, name):
-        els = self.find_elements_by_xpath(f'//XCUIElementTypeOther[@name="{name}"]')
+        els = self.find_elements_by_xpath(f'//XCUIElementTypeOther[starts-with(@name, "{name}")]')
         if not els:
             raise AssertionError(f"There is no league `{name}` on the landing page")
         else:
@@ -73,7 +76,7 @@ class Landing(Common):
         self.find_element_by_xpath(f'//XCUIElementTypeOther[@name="{name}"]').is_displayed()
 
     def select_team_from_page(self, name):
-        els = self.find_elements_by_xpath(f'//XCUIElementTypeOther[@name="{name}"]')
+        els = self.find_elements_by_xpath(f'//XCUIElementTypeOther[starts-with(@name, "{name}")]')
         if not els:
             raise AssertionError(f"There is no team `{name}` on the landing page")
         else:
@@ -95,4 +98,6 @@ class Landing(Common):
         # select the first suggested gif
         self.find_element_by_xpath(
             '//XCUIElementTypeScrollView/XCUIElementTypeOther[1]/XCUIElementTypeOther[1]/XCUIElementTypeOther/XCUIElementTypeOther[1]/XCUIElementTypeOther').click()
+        # check
+        assert len(self.find_elements_by_xpath('//XCUIElementTypeOther[2]/XCUIElementTypeImage')) > 1
 

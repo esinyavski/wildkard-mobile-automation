@@ -76,7 +76,8 @@ class Organizing(Common):
         self.click__create_team()
         self.enter_team_name(name)
         self.find_element_by_xpath('//*[@name="or"]').click()
-        if "Team name taken. Please type in a new team name." in self.driver.page_source:
+        time.sleep(1)
+        if "Team name taken. Please type in a new team name" in self.driver.page_source:
             pytest.skip("Team name taken. Please clean app's DB before test run")
         if upload_logo:
             self.upload_logo_from_gallery()
@@ -243,18 +244,18 @@ class Organizing(Common):
 
     def update_attendance(self):
         self.find_element_by_accessibility_id('Attendance ').click()
-        self.find_element_by_accessibility_id('1 TA1 0 RSVPs ').click()
+        self.find_element_by_xpath('//XCUIElementTypeOther[@name="1 TA1 0 RSVPs "]').click()
         self.find_element_by_accessibility_id('Here').click()
-        self.find_element_by_accessibility_id('1 TA2 0 RSVPs ').click()
+        self.find_element_by_xpath('//XCUIElementTypeOther[@name="1 TA2 0 RSVPs "]').click()
         self.find_element_by_accessibility_id('Absent').click()
         self.find_element_by_accessibility_id('Save attendance').click()
 
     def update_scores(self):
-        self.find_element_by_xpath('//XCUIElementTypeOther[@name="Scores "]').click()
+        self.find_element_by_accessibility_id('Scores ').click()
         self.find_element_by_xpath('(//XCUIElementTypeOther[@name=""])[1]').click()
         self.find_element_by_xpath('(//XCUIElementTypeOther[@name=""])[2]').click()
 
-        self.find_element_by_accessibility_id('1 TA1 0 POINTS ').click()
+        self.find_element_by_xpath('//XCUIElementTypeOther[@name="1 TA1 0 POINTS "]').click()
         self.find_element_by_xpath('(//XCUIElementTypeOther[@name=""])[2]').click()
         self.find_element_by_xpath('(//XCUIElementTypeOther[@name=""])[3]').click()
 
